@@ -1,7 +1,8 @@
+#include "espmissingincludes.h"
 #include "osapi.h"
 #include "user_interface.h"
 #include "wifi.h"
-#include "espmissingincludes.h"
+#include "controller.h"
 
 static struct station_config wifi_config;
 
@@ -26,6 +27,6 @@ static void ICACHE_FLASH_ATTR wifi_cb(System_Event_t * evt)
 {
 	if (evt->event == EVENT_STAMODE_GOT_IP) {
 		os_printf("Got IP!\n");
-		// node_notify(GOT_IP);
+		controller_accept_event(WiFiAssociated);
 	}
 }
