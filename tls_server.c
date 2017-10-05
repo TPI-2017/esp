@@ -28,7 +28,7 @@ void tls_server_init()
 {
 	espconn_secure_set_default_certificate(default_certificate,
 		default_certificate_len);
-	espconn_secure_set_default_private_key(default_private_key, 
+	espconn_secure_set_default_private_key(default_private_key,
 		default_private_key_len);
 }
 
@@ -45,7 +45,7 @@ void tls_server_start()
 void tls_server_stop()
 {
 	if (connection)
-		espconn_secure_delete(connection);
+		espconn_secure_disconnect(connection);
 	connection = NULL;
 }
 
@@ -56,10 +56,6 @@ static void connect_cb(void * connection)
 	os_printf("Connected.");
 }
 
-static void disconnect_cb(void * connection)
-{
-	os_printf("Disconnected.");
-}
 
 static void reconnect_cb(void * connection, sint8 error)
 {
