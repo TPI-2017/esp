@@ -8,6 +8,8 @@ extern "C" {
 
 static struct station_config wifi_config;
 
+static struct ip_info info;
+
 static void wifi_cb(System_Event_t * evt);
 
 void ICACHE_FLASH_ATTR wifi_init(void)
@@ -21,6 +23,13 @@ void ICACHE_FLASH_ATTR wifi_init(void)
 	os_memcpy(&wifi_config.password, PASSWORD, 64);
 	wifi_config.bssid_set = 0;
 	wifi_set_event_handler_cb(wifi_cb);
+
+	// Setear IP
+	IP4_ADDR(&info.ip, 192, 168, 0, 14);
+	IP4_ADDR(&info.gw, 192, 168, 0, 1);
+	IP4_ADDR(&info.netmask, 255, 255, 255, 0);
+	wifi_station_dhcpc_stop();
+	wifi_set_ip_info(STATION_IF, &info);
 
 	if (!wifi_station_set_config_current(&wifi_config))
 		os_printf("Failed to set 802.11 config!\n");
