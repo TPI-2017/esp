@@ -1,8 +1,14 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-enum Event{WiFiAssociated, WiFiDisassociated};
+#include "wifi_manager.h"
+#include "server.h"
 
-void controller_accept_event(enum Event event);
+class Controller
+{
+public:
+	enum Event{WiFiAssociated, WiFiDisassociated};
+	static void notify(Event event);
+};
 
 #endif

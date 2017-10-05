@@ -1,33 +1,16 @@
-extern "C" {
-#include "espmissingincludes.h"
-#include "ets_sys.h"
-#include "gpio.h"
-}
-#include "wifi.h"
 #include "controller.h"
-#include "tls_server.h"
+#include "server.h"
 
-
-void controller_accept_event(enum Event event)
+void Controller::notify(Event event)
 {
 	switch (event)
 	{
 	case WiFiAssociated:
-		tls_server_start();
+		Server::listen();
 		break;
 	case WiFiDisassociated:
+		Server::close();
 		break;
 	}
 }
 
-extern "C" {
-/* Punto de entrada */
-void user_init()
-{
-	uart_div_modify(0, UART_CLK_FREQ / 115200);
-	gpio_init();
-	wifi_init();
-	tls_server_init();
-}
-
-}
