@@ -1,6 +1,8 @@
+extern "C" {
 #include "espmissingincludes.h"
 #include "osapi.h"
 #include "user_interface.h"
+}
 #include "wifi.h"
 #include "controller.h"
 
@@ -31,3 +33,4 @@ static void ICACHE_FLASH_ATTR wifi_cb(System_Event_t * evt)
 		controller_accept_event(WiFiAssociated);
 	}
 }
+

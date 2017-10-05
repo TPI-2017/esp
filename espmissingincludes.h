@@ -1,6 +1,8 @@
 #ifndef ESPMISSINGINCLUDES_H
 #define ESPMISSINGINCLUDES_H
 
+extern "C" {
+
 #include <c_types.h>
 
 
@@ -70,4 +72,5 @@ void pvPortFree(void *ptr, const char *file, int line);
 
 #endif
 
+}
 #endif

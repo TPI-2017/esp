@@ -1,9 +1,12 @@
+extern "C" {
 #include "espmissingincludes.h"
 #include "ets_sys.h"
 #include "gpio.h"
+}
 #include "wifi.h"
 #include "controller.h"
 #include "tls_server.h"
+
 
 void controller_accept_event(enum Event event)
 {
@@ -17,6 +20,7 @@ void controller_accept_event(enum Event event)
 	}
 }
 
+extern "C" {
 /* Punto de entrada */
 void user_init()
 {
@@ -24,4 +28,6 @@ void user_init()
 	gpio_init();
 	wifi_init();
 	tls_server_init();
+}
+
 }
