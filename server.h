@@ -7,6 +7,8 @@ extern "C" {
 #include "espconn.h"
 }
 
+#include "buffer.h"
+
 class Server {
 public:
 	static void init();
@@ -16,6 +18,7 @@ private:
 	static esp_tcp tcpParams;
 	static espconn server;
 	static espconn *connection;
+	static Buffer<> rxBuffer;
 	static void connectCallback(void *conn);
 	static void disconnectCallback(void *conn);
 	static void reconnectCallback(void *conn, sint8 error);

@@ -17,7 +17,6 @@ espconn *Server::connection = nullptr;
 
 void Server::init()
 {
-	// TODO: inicializar cada campo
 	os_memset(&tcpParams, 0, sizeof(esp_tcp));
 	os_memset(&server, 0, sizeof(espconn));
 	tcpParams.local_port = 443;

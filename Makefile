@@ -15,7 +15,7 @@ controller.o: controller.cpp wifi_manager.h
 
 wifi_manager.o: wifi_manager.cpp wifi_manager.h controller.h
 
-server.o: server.cpp server.h cert.h private_key.h
+server.o: server.cpp server.h cert.h private_key.h buffer.h
 
 test.o: test.cpp
 
