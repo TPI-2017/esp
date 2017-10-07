@@ -52,7 +52,8 @@ void Server::close()
 void Server::connectCallback(void *conn)
 {
 	connection = (espconn *) conn;
-	espconn_secure_send(connection, (uint8 *) "Hola desde ESP8266!\n", 20);
+	espconn_set_opt(connection, ESPCONN_KEEPALIVE);
+	espconn_clear_opt(connection, ESPCONN_COPY);
 	os_printf("Connected.\n");
 }
 
@@ -64,4 +65,11 @@ void Server::disconnectCallback(void *conn)
 void Server::reconnectCallback(void *conn, sint8 error)
 {
 	os_printf("Connection lost.\n");
+}
+
+void Server::receiveCallback(void *conn, char *data, sint16 size)
+{
+	uint16_t bytesWritten = rxBuffer.write(data, size);
+	if (bytesWritten != size)
+		os_printf("Buffer full! Discarding data!\n");
 }

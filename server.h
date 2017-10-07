@@ -22,6 +22,7 @@ private:
 	static void connectCallback(void *conn);
 	static void disconnectCallback(void *conn);
 	static void reconnectCallback(void *conn, sint8 error);
+	static void receiveCallback(void *conn, char *data, sint16 size);
 };
 
 #endif
