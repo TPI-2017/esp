@@ -14,6 +14,7 @@ extern "C" {
 esp_tcp Server::tcpParams;
 espconn Server::server;
 espconn *Server::connection = nullptr;
+Buffer<> Server::rxBuffer;
 
 void Server::init()
 {
