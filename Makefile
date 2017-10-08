@@ -17,8 +17,6 @@ wifi_manager.o: wifi_manager.cpp wifi_manager.h controller.h
 
 server.o: server.cpp server.h cert.h private_key.h buffer.h
 
-test.o: test.cpp
-
 flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin
 
