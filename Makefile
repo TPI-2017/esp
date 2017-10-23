@@ -1,7 +1,10 @@
+INCLUDE = /opt/espressif/sdk/include
+LIBS = /opt/espressif/sdk/lib
 CXX = xtensa-lx106-elf-g++
-CXXFLAGS = -I. -mlongcalls -DICACHE_FLASH -Wall -std=c++11 -Wno-missing-braces -Os
-LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lc -lssl -Wl,--end-group -lgcc
-LDFLAGS = -Teagle.app.v6.ld
+CXXFLAGS = -I$(INCLUDE) -mlongcalls -DICACHE_FLASH -Wall -std=c++11 -Wno-missing-braces -Os
+LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lmbedtls -lc -Wl,--end-group -lgcc
+LDFLAGS = -L$(LIBS) -Teagle.app.v6.ld
+
 
 node-0x00000.bin: node
 	esptool.py elf2image $^

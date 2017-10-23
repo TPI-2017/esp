@@ -33,8 +33,8 @@ public:
 		n = (dim + n > Capacity) ? Capacity - dim : n;
 		const uint8_t *ptr = static_cast<const uint8_t*>(src);
 
-		for (uint16_t i = head; i < n; i++)
-			buffer[i % Capacity] = ptr[i];
+		for (uint16_t i = 0; i < n; i++)
+			buffer[(head + i) % Capacity] = ptr[i];
 
 		grow(n);
 		return n;
@@ -45,8 +45,8 @@ public:
 		n = (dim > n) ? n : dim;
 		uint8_t *ptr = static_cast<uint8_t*>(dst);
 
-		for (uint16_t i = tail; i < n; i++)
-			ptr[i] = buffer[i % Capacity];
+		for (uint16_t i = 0; i < n; i++)
+			ptr[i] = buffer[(i + tail) % Capacity];
 
 		shrink(n);
 		return n;

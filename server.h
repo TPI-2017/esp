@@ -14,15 +14,20 @@ public:
 	static void init();
 	static void listen();
 	static void close();
+	static uint16_t send(const void *data, uint16_t len);
 private:
 	static esp_tcp tcpParams;
 	static espconn server;
 	static espconn *connection;
-	static Buffer<> rxBuffer;
+	static bool readyToSend;
+	static Buffer<512> rxBuffer;
+	static Buffer<512> txBuffer;
 	static void connectCallback(void *conn);
 	static void disconnectCallback(void *conn);
 	static void reconnectCallback(void *conn, sint8 error);
 	static void receiveCallback(void *conn, char *data, sint16 size);
+	static void sentCallback(void *conn);
+	static void doSend(uint8_t *data, uint16_t len);
 };
 
 #endif
