@@ -95,8 +95,8 @@ void Server::sentCallback(void *conn)
 		readyToSend = true;
 	} else {
 		uint8_t block[128];
-		uint8_t blockSize = txBuffer.read(block, 128);
-		doSend(block, blockSize);
+		// uint8_t blockSize = txBuffer.read(block, 128);
+		// doSend(block, blockSize);
 	}
 }
 

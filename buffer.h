@@ -5,21 +5,9 @@
 
 template<uint16_t Capacity = 1024>
 class Buffer {
-	uint8_t buffer[Capacity];
-	uint16_t tail = 0, head = 0, dim = 0;
+	uint8_t mBuffer[Capacity];
+	uint16_t mDim = 0;
 
-	inline void grow(uint16_t n)
-	{
-		head = (head + n) % Capacity;
-		dim += n;
-	}
-
-	inline void shrink(uint16_t n)
-	{
-
-		tail = (tail + n) % Capacity;
-		dim -= n;
-	}
 public:
 	Buffer() = default;
 	~Buffer() = default;
@@ -28,44 +16,42 @@ public:
 	Buffer &operator=(const Buffer &) = delete;
 	Buffer &operator=(Buffer &&) = delete;
 
-	uint16_t write(const void *src, uint16_t n)
+	bool write(const void *src, uint16_t n)
 	{
-		n = (dim + n > Capacity) ? Capacity - dim : n;
 		const uint8_t *ptr = static_cast<const uint8_t*>(src);
+		if (mDim + n > Capacity)
+			return false;
 
 		for (uint16_t i = 0; i < n; i++)
-			buffer[(head + i) % Capacity] = ptr[i];
+			mBuffer[mDim++] = ptr[i];
 
-		grow(n);
-		return n;
+		return true;
 	};
 
-	uint16_t read(void *dst, uint16_t n)
+	const void *data() const
 	{
-		n = (dim > n) ? n : dim;
-		uint8_t *ptr = static_cast<uint8_t*>(dst);
-
-		for (uint16_t i = 0; i < n; i++)
-			ptr[i] = buffer[(i + tail) % Capacity];
-
-		shrink(n);
-		return n;
-	};
+		return mBuffer;
+	}
 
 	bool size() const
 	{
-		return dim;
+		return mDim;
 	};
 
 	bool empty() const
 	{
-		return dim == 0;
+		return mDim == 0;
 	};
 
 	bool full() const
 	{
-		return dim == Capacity;
+		return mDim == Capacity;
 	};
+
+	void clear()
+	{
+		mDim = 0;
+	}
 };
 
 #endif
