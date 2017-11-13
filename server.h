@@ -8,6 +8,7 @@ extern "C" {
 }
 
 #include "buffer.h"
+#include "protocolo/Message.h"
 
 class Server {
 public:
@@ -20,8 +21,8 @@ private:
 	static espconn server;
 	static espconn *connection;
 	static bool readyToSend;
-	static Buffer<512> rxBuffer;
-	static Buffer<512> txBuffer;
+	static Buffer<Message::MESSAGE_SIZE> rxBuffer;
+	static Buffer<Message::MESSAGE_SIZE> txBuffer;
 	static void connectCallback(void *conn);
 	static void disconnectCallback(void *conn);
 	static void reconnectCallback(void *conn, sint8 error);

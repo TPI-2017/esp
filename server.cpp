@@ -11,13 +11,12 @@ extern "C" {
 
 #include "server.h"
 #include "controller.h"
-#include "protocolo/Message.h"
 
 esp_tcp Server::tcpParams;
 espconn Server::server;
 espconn *Server::connection = nullptr;
-Buffer<Message::TEXT_SIZE> Server::rxBuffer;
-Buffer<Message::TEXT_SIZE> Server::txBuffer;
+Buffer<Message::MESSAGE_SIZE> Server::rxBuffer;
+Buffer<Message::MESSAGE_SIZE> Server::txBuffer;
 bool Server::readyToSend = false;
 
 void Server::init()
@@ -104,23 +103,23 @@ void Server::receiveCallback(void *conn, char *data, sint16 size)
 				}
 
 				switch(msg.type()) {
-					case Auth:
+					case Message::Type::Auth:
 						os_printf("Auth request\n"); break;
-					case SetPassword:
+					case Message::Type::SetPassword:
 						os_printf("SetPassword request\n"); break;
-					case GetText:
+					case Message::Type::GetText:
 						os_printf("GetText request\n"); break;
-					case SetText:
+					case Message::Type::SetText:
 						os_printf("SetText request\n"); break;
-					case GetWiFiConfig:
+					case Message::Type::GetWiFiConfig:
 						os_printf("GetWifiConfig request\n"); break;
-					case SetWiFiConfig:
+					case Message::Type::SetWiFiConfig:
 						os_printf("SetWifiConfig request\n"); break;
-					case GenericResponse:
+					case Message::Type::GenericResponse:
 						os_printf("GenericResponse\n"); break;
-					case GetTextResponse:
+					case Message::Type::GetTextResponse:
 						os_printf("GetTextResponse\n"); break;
-					case GetWiFiConfigResponse:
+					case Message::Type::GetWiFiConfigResponse:
 						os_printf("GetWifiConfigResponse\n"); break;
 				}
 
