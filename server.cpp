@@ -11,12 +11,13 @@ extern "C" {
 
 #include "server.h"
 #include "controller.h"
+#include "protocolo/Message.h"
 
 esp_tcp Server::tcpParams;
 espconn Server::server;
 espconn *Server::connection = nullptr;
-Buffer<512> Server::rxBuffer;
-Buffer<512> Server::txBuffer;
+Buffer<Message::TEXT_SIZE> Server::rxBuffer;
+Buffer<Message::TEXT_SIZE> Server::txBuffer;
 bool Server::readyToSend = false;
 
 void Server::init()
@@ -84,9 +85,56 @@ void Server::reconnectCallback(void *conn, sint8 error)
 
 void Server::receiveCallback(void *conn, char *data, sint16 size)
 {
-	uint16_t bytesWritten = rxBuffer.write(data, size);
-	if (bytesWritten != size)
-		os_printf("Receive buffer full! Discarding data!\n");
+	if (rxBuffer.write(data, size)) {
+		if (rxBuffer.full()) {
+			Message msg = Message::createMessage(rxBuffer.data());
+			#warning Desactivar timeout;
+			rxBuffer.clear();
+
+			// Esto va en un nuevo metodo que se encargue de handlear los mensajes.
+			{
+				if (msg.empty()) {
+					os_printf("El mensaje está vacío\n");
+					return;
+				}
+
+				if (msg.version() > Message::SUPPORTED_PROTOCOL_VERSION) {
+					os_printf("Version de protocolo no soportada\n");
+					return;
+				}
+
+				switch(msg.type()) {
+					case Auth:
+						os_printf("Auth request\n"); break;
+					case SetPassword:
+						os_printf("SetPassword request\n"); break;
+					case GetText:
+						os_printf("GetText request\n"); break;
+					case SetText:
+						os_printf("SetText request\n"); break;
+					case GetWiFiConfig:
+						os_printf("GetWifiConfig request\n"); break;
+					case SetWiFiConfig:
+						os_printf("SetWifiConfig request\n"); break;
+					case GenericResponse:
+						os_printf("GenericResponse\n"); break;
+					case GetTextResponse:
+						os_printf("GetTextResponse\n"); break;
+					case GetWiFiConfigResponse:
+						os_printf("GetWifiConfigResponse\n"); break;
+				}
+
+			}
+			
+			
+		} else {
+			#warning Implementar timeout;
+		}
+	} else {
+		os_printf("Buffer overflow\n");
+		#warning Desactivar timeout;
+		rxBuffer.clear();
+	}
 }
 
 void Server::sentCallback(void *conn)
