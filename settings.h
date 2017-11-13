@@ -22,7 +22,7 @@ public:
 	static void setWiFiPassword(const char *wifiPassword);
 	static void setIP(uint32_t ip);
 	static void setSubnetMask(uint32_t subnetMask);
-	static void password(const char *password);
+	static void setPassword(const char *password);
 	static void setText(const char *text);
 	static void setBlinkRate(uint8_t blinkRate);
 	static void setSlideRate(uint16_t slideRate);

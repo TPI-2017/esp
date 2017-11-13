@@ -3,13 +3,13 @@
 void Settings::loadSettings()
 {
 	setSSID("Fibertel");
-	mWiFiPassword.write("lipschitzpotato", mWiFiPassword.capacity());
-	mIP = 0;
-	mSubnetMask = 0;
-	mPassword.write("1234", mPassword.capacity());
-	mText.write("Hello World!", mText.capacity());
-	mBlinkRate = 0;
-	mSlideRate = 0;
+	setWiFiPassword("lipschitzpotato");
+	setIP(0);
+	setSubnetMask(0);
+	setPassword("1234");
+	setText("Hello World");
+	setBlinkRate(0);
+	setSlideRate(0);
 }
 
 void Settings::storeSettings()
@@ -79,7 +79,7 @@ void Settings::setSubnetMask(uint32_t subnetMask)
 	mSubnetMask = subnetMask;
 }
 
-void Settings::password(const char *password)
+void Settings::setPassword(const char *password)
 {
 	mPassword.clear();
 	mPassword.write(password, mPassword.capacity());
