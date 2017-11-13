@@ -33,7 +33,7 @@ public:
 		return mBuffer;
 	}
 
-	bool size() const
+	uint16_t size() const
 	{
 		return mDim;
 	};
