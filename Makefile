@@ -1,7 +1,7 @@
 INCLUDE = /opt/espressif/sdk/include
 LIBS = /opt/espressif/sdk/lib
 CXX = xtensa-lx106-elf-g++
-CXXFLAGS = -I$(INCLUDE) -mlongcalls -DICACHE_FLASH -Wall -std=c++11 -Wno-missing-braces -Os
+CXXFLAGS = -I$(INCLUDE) -mlongcalls -DICACHE_FLASH -DESP -Wall -std=c++11 -Wno-missing-braces -fno-strict-aliasing -Os
 LDLIBS = -nostdlib -Wl,--start-group -lmain -lnet80211 -lwpa -llwip -lpp -lphy -lmbedtls -lc -Wl,--end-group -lgcc
 LDFLAGS = -L$(LIBS) -Teagle.app.v6.ld
 
@@ -9,8 +9,8 @@ LDFLAGS = -L$(LIBS) -Teagle.app.v6.ld
 node-0x00000.bin: node
 	esptool.py elf2image $^
 
-node: main.o server.o controller.o wifi_manager.o
-	$(CXX) main.o server.o controller.o wifi_manager.o $(LDLIBS) $(LDFLAGS) -o node
+node: main.o server.o controller.o wifi_manager.o protocolo/Message.o
+	$(CXX) main.o server.o controller.o wifi_manager.o protocolo/Message.o $(LDLIBS) $(LDFLAGS) -o node
 
 main.o: main.cpp wifi_manager.h
 
@@ -19,6 +19,8 @@ controller.o: controller.cpp wifi_manager.h
 wifi_manager.o: wifi_manager.cpp wifi_manager.h controller.h
 
 server.o: server.cpp server.h cert.h private_key.h buffer.h
+
+protocolo/Message.o: protocolo/Message.cpp protocolo/Message.h
 
 flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin

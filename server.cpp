@@ -41,6 +41,7 @@ void Server::listen()
 	espconn_regist_disconcb(&server, Server::disconnectCallback);
 	espconn_regist_reconcb(&server, Server::reconnectCallback);
 	espconn_regist_sentcb(&server, Server::sentCallback);
+	espconn_regist_recvcb(&server, (espconn_recv_callback)Server::receiveCallback);
 	espconn_set_opt(&server, ESPCONN_KEEPALIVE);
 	espconn_clear_opt(&server, ESPCONN_COPY);
 	espconn_secure_accept(&server);
@@ -82,7 +83,7 @@ void Server::reconnectCallback(void *conn, sint8 error)
 	Controller::notify(Controller::Disconnected);
 }
 
-void Server::receiveCallback(void *conn, char *data, sint16 size)
+void Server::receiveCallback(void *conn, char *data, uint16 size)
 {
 	if (rxBuffer.write(data, size)) {
 		if (rxBuffer.full()) {
