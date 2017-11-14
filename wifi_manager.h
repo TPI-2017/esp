@@ -4,7 +4,6 @@
 extern "C" {
 #include "user_interface.h"
 }
-#include "controller.h"
 
 class WifiManager {
 public:

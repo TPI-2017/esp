@@ -1,11 +1,22 @@
 #include "settings.h"
+#include "strings.h"
+
+char Settings::mSSID[Message::WIFI_SSID_SIZE + 1];
+char Settings::mWiFiPassword[Message::WIFI_PASSWORD_SIZE + 1];
+uint32_t Settings::mIP;
+uint32_t Settings::mSubnetMask;
+char Settings::mPassword[Message::PASSWORD_SIZE + 1];
+char Settings::mText[Message::TEXT_SIZE + 1];
+uint8_t Settings::mBlinkRate;
+uint8_t Settings::mSlideRate;
 
 void Settings::loadSettings()
 {
-	setSSID("Fibertel");
-	setWiFiPassword("lipschitzpotato");
-	setIP(0);
-	setSubnetMask(0);
+	#warning Esto se tiene que leer desde memoria no volatile.
+	setSSID("Agustin");
+	setWiFiPassword("doctor reformulemelo");
+	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
+	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
 	setText("Hello World");
 	setBlinkRate(0);
@@ -19,12 +30,12 @@ void Settings::storeSettings()
 
 const char *Settings::ssid()
 {
-	return reinterpret_cast<const char*>(mSSID.data());
+	return reinterpret_cast<const char*>(mSSID);
 }
 
 const char *Settings::wifiPassword()
 {
-	return reinterpret_cast<const char*>(mWiFiPassword.data());
+	return reinterpret_cast<const char*>(mWiFiPassword);
 }
 
 uint32_t Settings::ip()
@@ -39,12 +50,12 @@ uint32_t Settings::subnetMask()
 
 const char *Settings::password()
 {
-	return reinterpret_cast<const char*>(mPassword.data());
+	return reinterpret_cast<const char*>(mPassword);
 }
 
 const char *Settings::text()
 {
-	return reinterpret_cast<const char*>(mText.data());
+	return reinterpret_cast<const char*>(mText);
 }
 
 uint8_t Settings::blinkRate()
@@ -59,14 +70,12 @@ uint16_t Settings::slideRate()
 
 void Settings::setSSID(const char *ssid)
 {
-	mSSID.clear();
-	mSSID.write(ssid, mSSID.capacity());
+	strcpy_s(mSSID, ssid, Message::WIFI_SSID_SIZE + 1);
 }
 
 void Settings::setWiFiPassword(const char *wifiPassword)
 {
-	mWiFiPassword.clear();
-	mWiFiPassword.write(wifiPassword, mWiFiPassword.capacity());
+	strcpy_s(mWiFiPassword, wifiPassword, Message::WIFI_PASSWORD_SIZE + 1);
 }
 
 void Settings::setIP(uint32_t ip)
@@ -81,14 +90,12 @@ void Settings::setSubnetMask(uint32_t subnetMask)
 
 void Settings::setPassword(const char *password)
 {
-	mPassword.clear();
-	mPassword.write(password, mPassword.capacity());
+	strcpy_s(mPassword, password, Message::PASSWORD_SIZE + 1);
 }
 
 void Settings::setText(const char *text)
 {
-	mText.clear();
-	mText.write(text, mText.capacity());
+	strcpy_s(mText, text, Message::TEXT_SIZE + 1);
 }
 
 void Settings::setBlinkRate(uint8_t blinkRate)

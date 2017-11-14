@@ -2,7 +2,6 @@
 #define SETTINGS_H
 
 #include "protocolo/Message.h"
-#include "buffer.h"
 
 class Settings {
 public:
@@ -28,14 +27,15 @@ public:
 	static void setSlideRate(uint16_t slideRate);
 
 private:
-	static Buffer<Message::WIFI_SSID_SIZE + 1>     mSSID;
-	static Buffer<Message::WIFI_PASSWORD_SIZE + 1> mWiFiPassword;
-	static uint32_t                                mIP;
-	static uint32_t                                mSubnetMask;
-	static Buffer<Message::PASSWORD_SIZE + 1>      mPassword;
-	static Buffer<Message::TEXT_SIZE + 1>          mText;
-	static uint8_t                                 mBlinkRate;
-	static uint8_t                                 mSlideRate;
+
+	static char mSSID[Message::WIFI_SSID_SIZE + 1];
+	static char mWiFiPassword[Message::WIFI_PASSWORD_SIZE + 1];
+	static uint32_t mIP;
+	static uint32_t mSubnetMask;
+	static char mPassword[Message::PASSWORD_SIZE + 1];
+	static char mText[Message::TEXT_SIZE + 1];
+	static uint8_t mBlinkRate;
+	static uint8_t mSlideRate;
 };
 
 #endif

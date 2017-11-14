@@ -1,10 +1,11 @@
-#include "controller.h"
-#include "server.h"
-
 extern "C" {
 #include "osapi.h"
 #include "espmissingincludes.h"
 }
+
+#include "controller.h"
+#include "server.h"
+#include "wifi_manager.h"
 
 static os_timer_t timer;
 static void callback(void *arg)
