@@ -85,7 +85,8 @@ void Server::receiveCallback(void *conn, char *data, uint16 size)
 
 void Server::send(const void *data, uint16_t len)
 {
-	int8_t res = espconn_secure_send(connection, data, len);
+	uint8_t *ptr = reinterpret_cast<uint8_t*>(const_cast<void*>(data));
+	int8_t res = espconn_secure_send(connection, ptr, len);
 	if (res) {
 		os_printf("espconn_secure_send:\n");
 		switch (res) {
