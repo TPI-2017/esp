@@ -28,7 +28,7 @@ void static inline strcpy_s(void *dst, const void *src, uint8_t dstSize)
 // hasta que el otro llegue a 0. En caso de que ninguno de los dos tenga el
 // terminador, el comportamiento también resulta indefinido y se intentará leer
 // hasta alcanzar dstSize.
-bool static inline strcmp_s(void *dst, const void *src, uint8_t dstSize)
+bool static inline strcmp_s(const void *dst, const void *src, uint8_t dstSize)
 {
 	#warning Implementar la comparacion de strings.
 	return false;

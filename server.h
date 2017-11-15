@@ -15,7 +15,7 @@ public:
 	static void init();
 	static void listen();
 	static void close();
-	static uint16_t send(const void *data, uint16_t len);
+	static void send(const void *data, const uint16_t len);
 private:
 	static esp_tcp tcpParams;
 	static espconn server;

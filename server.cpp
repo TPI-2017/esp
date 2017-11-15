@@ -46,7 +46,7 @@ void Server::listen()
 	espconn_secure_accept(&server);
 }
 
-uint16_t Server::send(const void *data, uint16_t len)
+void Server::send(const void *data, const uint16_t len)
 {
 	#warning Implementar send.
 	if (false) {
