@@ -7,7 +7,6 @@ extern "C" {
 
 class WifiManager {
 public:
-	WifiManager();
 	static void init();
 private:
 	static void wifiCallback(System_Event_t *evt);

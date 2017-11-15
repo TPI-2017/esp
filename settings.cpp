@@ -25,7 +25,7 @@ void Settings::loadSettings()
 
 void Settings::storeSettings()
 {
-	#warning No implementado.
+	#warning Implementar para guardar settings.
 }
 
 const char *Settings::ssid()

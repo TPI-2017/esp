@@ -4,8 +4,8 @@ extern "C" {
 #include "user_interface.h"
 }
 
-#include "wifi_manager.h"
 #include "settings.h"
+#include "wifi_manager.h"
 #include "server.h"
 
 extern "C" {

@@ -1,5 +1,4 @@
-#ifndef BUFFER_H
-#define BUFFER_H
+#pragma once
 
 #include <cstdint>
 
@@ -53,10 +52,4 @@ public:
 		mDim = 0;
 	}
 
-	uint16_t capacity() const
-	{
-		return Capacity;
-	}
 };
-
-#endif
