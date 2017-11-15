@@ -54,9 +54,10 @@ void Server::send(const void *data, const uint16_t len)
 		if (readyToSend) {
 			doSend(ptr, len);
 			readyToSend = false;
-			return len;
+			//return len;
 		} else {
-			return txBuffer.write(data, len);
+			//return txBuffer.write(data, len);
+			return;
 		}
 	}
 }
