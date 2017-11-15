@@ -9,14 +9,16 @@ LDFLAGS = -L$(LIBS) -Teagle.app.v6.ld
 node-0x00000.bin: node
 	esptool.py elf2image $^
 
-node: main.o server.o controller.o wifi_manager.o settings.o protocolo/Message.o
-	$(CXX) main.o server.o controller.o wifi_manager.o settings.o protocolo/Message.o $(LDLIBS) $(LDFLAGS) -o node
+node: main.o server.o controller.o message_handler.o wifi_manager.o settings.o protocolo/Message.o
+	$(CXX) main.o server.o controller.o message_handler.o wifi_manager.o settings.o protocolo/Message.o $(LDLIBS) $(LDFLAGS) -o node
 
 main.o: main.cpp wifi_manager.h settings.h server.h
 
 controller.o: controller.cpp controller.h wifi_manager.h server.h
 
-server.o: server.cpp server.h cert.h private_key.h buffer.h
+message_handler.o: message_handler.cpp message_handler.h settings.h strings.h server.h protocolo/Message.h
+
+server.o: server.cpp server.h cert.h private_key.h buffer.h message_handler.h
 
 settings.o: settings.cpp settings.h strings.h protocolo/Message.h
 

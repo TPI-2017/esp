@@ -11,6 +11,7 @@ extern "C" {
 
 #include "server.h"
 #include "controller.h"
+#include "message_handler.h"
 
 esp_tcp Server::tcpParams;
 espconn Server::server;
@@ -32,10 +33,8 @@ void Server::init()
 void Server::listen()
 {
 	// TODO si algo anda mal, mirar aca.
-	espconn_secure_set_default_certificate(default_certificate,
-		default_certificate_len);
-	espconn_secure_set_default_private_key(default_private_key,
-		default_private_key_len);
+	espconn_secure_set_default_certificate(default_certificate, default_certificate_len);
+	espconn_secure_set_default_private_key(default_private_key, default_private_key_len);
 
 	espconn_regist_connectcb(&server, Server::connectCallback);
 	espconn_regist_disconcb(&server, Server::disconnectCallback);
@@ -49,13 +48,16 @@ void Server::listen()
 
 uint16_t Server::send(const void *data, uint16_t len)
 {
-	uint8_t *ptr = reinterpret_cast<uint8_t*>(const_cast<void*>(data));
-	if (readyToSend) {
-		doSend(ptr, len);
-		readyToSend = false;
-		return len;
-	} else {
-		return txBuffer.write(data, len);
+	#warning Implementar send.
+	if (false) {
+		uint8_t *ptr = reinterpret_cast<uint8_t*>(const_cast<void*>(data));
+		if (readyToSend) {
+			doSend(ptr, len);
+			readyToSend = false;
+			return len;
+		} else {
+			return txBuffer.write(data, len);
+		}
 	}
 }
 
@@ -90,43 +92,7 @@ void Server::receiveCallback(void *conn, char *data, uint16 size)
 			Message msg = Message::createMessage(rxBuffer.data());
 			#warning Desactivar timeout;
 			rxBuffer.clear();
-
-			// Esto va en un nuevo metodo que se encargue de handlear los mensajes.
-			{
-				if (msg.empty()) {
-					os_printf("El mensaje está vacío\n");
-					return;
-				}
-
-				if (msg.version() > Message::SUPPORTED_PROTOCOL_VERSION) {
-					os_printf("Version de protocolo no soportada\n");
-					return;
-				}
-
-				switch(msg.type()) {
-					case Message::Type::Auth:
-						os_printf("Auth request\n"); break;
-					case Message::Type::SetPassword:
-						os_printf("SetPassword request\n"); break;
-					case Message::Type::GetText:
-						os_printf("GetText request\n"); break;
-					case Message::Type::SetText:
-						os_printf("SetText request\n"); break;
-					case Message::Type::GetWiFiConfig:
-						os_printf("GetWifiConfig request\n"); break;
-					case Message::Type::SetWiFiConfig:
-						os_printf("SetWifiConfig request\n"); break;
-					case Message::Type::GenericResponse:
-						os_printf("GenericResponse\n"); break;
-					case Message::Type::GetTextResponse:
-						os_printf("GetTextResponse\n"); break;
-					case Message::Type::GetWiFiConfigResponse:
-						os_printf("GetWifiConfigResponse\n"); break;
-				}
-
-			}
-			
-			
+			MessageHandler::handle(msg);			
 		} else {
 			#warning Implementar timeout;
 		}
@@ -139,13 +105,14 @@ void Server::receiveCallback(void *conn, char *data, uint16 size)
 
 void Server::sentCallback(void *conn)
 {
-	if(txBuffer.empty()) {
-		readyToSend = true;
-	} else {
-		uint8_t block[128];
-		// uint8_t blockSize = txBuffer.read(block, 128);
-		// doSend(block, blockSize);
-	}
+	#warning Implementar sentcallback.
+	//if(txBuffer.empty()) {
+		//readyToSend = true;
+	//} else {
+		//uint8_t block[128];
+		//uint8_t blockSize = txBuffer.read(block, 128);
+		//doSend(block, blockSize);
+	//}
 }
 
 void Server::doSend(uint8_t *data, uint16_t len)
