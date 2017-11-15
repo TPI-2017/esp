@@ -52,6 +52,11 @@ public:
 	{
 		mDim = 0;
 	}
+
+	uint16_t capacity() const
+	{
+		return Capacity;
+	}
 };
 
 #endif
