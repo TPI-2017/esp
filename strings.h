@@ -19,6 +19,8 @@ void static inline strcpy_s(void *dst, const void *src, uint8_t dstSize)
 		dstSize--;
 	}
 
+	*cdst = '\0';
+
 	if (*csrc)
 		reinterpret_cast<char*>(dst)[0] = '\0';
 }
