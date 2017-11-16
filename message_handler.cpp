@@ -23,7 +23,7 @@ void MessageHandler::handle(const Message &msg)
 		return;
 	}
 
-	if (strcmp_s(msg.password(), Settings::password(), Message::PASSWORD_SIZE + 1)) {
+	if (!strcmp_s(msg.password(), Settings::password(), Message::PASSWORD_SIZE + 1)) {
 		os_printf("Password incorrecto\n");
 		Server::send(Message::createGenericResponse(Message::ResponseCodePosition::BadPassword).data(), Message::MESSAGE_SIZE);
 		return;
