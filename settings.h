@@ -15,7 +15,7 @@ public:
 	static const char *password();
 	static const char *text();
 	static uint8_t blinkRate();
-	static uint16_t slideRate();
+	static uint8_t slideRate();
 
 	static void setSSID(const char *ssid);
 	static void setWiFiPassword(const char *wifiPassword);
@@ -24,7 +24,7 @@ public:
 	static void setPassword(const char *password);
 	static void setText(const char *text);
 	static void setBlinkRate(uint8_t blinkRate);
-	static void setSlideRate(uint16_t slideRate);
+	static void setSlideRate(uint8_t slideRate);
 
 private:
 

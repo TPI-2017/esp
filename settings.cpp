@@ -13,8 +13,8 @@ uint8_t Settings::mSlideRate;
 void Settings::loadSettings()
 {
 	#warning Esto se tiene que leer desde memoria no volatile.
-	setSSID("Agustin");
-	setWiFiPassword("doctor reformulemelo");
+	setSSID("Fibertel");
+	setWiFiPassword("lipschitzpotato");
 	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
 	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
@@ -63,7 +63,7 @@ uint8_t Settings::blinkRate()
 	return mBlinkRate;
 }
 
-uint16_t Settings::slideRate()
+uint8_t Settings::slideRate()
 {
 	return mSlideRate;
 }
@@ -103,7 +103,7 @@ void Settings::setBlinkRate(uint8_t blinkRate)
 	mBlinkRate = blinkRate;
 }
 
-void Settings::setSlideRate(uint16_t slideRate)
+void Settings::setSlideRate(uint8_t slideRate)
 {
 	mSlideRate = slideRate;
 }
