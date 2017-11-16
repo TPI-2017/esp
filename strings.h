@@ -31,7 +31,7 @@ void static inline strcpy_s(void *dst, const void *src, uint8_t dstSize)
 bool static inline strcmp_s(const void *dst, const void *src, uint8_t dstSize)
 {
 	#warning Implementar la comparacion de strings.
-	return false;
+	return true;
 }
 
 #endif

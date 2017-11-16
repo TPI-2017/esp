@@ -5,19 +5,24 @@ extern "C" {
 }
 
 #include "wifi_manager.h"
-#include "controller.h"
 #include "protocolo/Message.h"
 #include "settings.h"
 #include "strings.h"
+#include "server.h"
 #include <stdint.h>
 
 struct station_config WifiManager::stationConfig;
 struct ip_info WifiManager::ipInfo;
 
-void ICACHE_FLASH_ATTR WifiManager::wifiCallback(System_Event_t * evt)
+void ICACHE_FLASH_ATTR WifiManager::wifiCallback(System_Event_t *evt)
 {
-	if (evt->event == EVENT_STAMODE_GOT_IP)
-		Controller::notify(Controller::WiFiAssociated);
+	if (evt->event == EVENT_STAMODE_GOT_IP) {
+		os_printf("WiFi connection established\n");
+		Server::listen();
+	} else (evt->event == EVENT_STAMODE_DISCONNECTED) {
+		os_printf("WiFi disconnected\n");
+		Server::close();
+	}
 }
 
 void ICACHE_FLASH_ATTR WifiManager::init()

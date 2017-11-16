@@ -19,8 +19,8 @@ void Settings::loadSettings()
 	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
 	setText("Hello World");
-	setBlinkRate(0);
-	setSlideRate(0);
+	setBlinkRate(1);
+	setSlideRate(23);
 }
 
 void Settings::storeSettings()
