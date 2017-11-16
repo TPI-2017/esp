@@ -10,7 +10,6 @@ extern "C" {
 }
 
 #include "server.h"
-#include "controller.h"
 #include "message_handler.h"
 
 esp_tcp Server::tcpParams;
@@ -34,17 +33,20 @@ void Server::listen()
 	espconn_secure_set_default_certificate(default_certificate, default_certificate_len);
 	espconn_secure_set_default_private_key(default_private_key, default_private_key_len);
 
+	// Server callbacks
 	espconn_regist_connectcb(&server, Server::connectCallback);
 	espconn_regist_disconcb(&server, Server::disconnectCallback);
 	espconn_regist_reconcb(&server, Server::reconnectCallback);
 	espconn_regist_sentcb(&server, Server::sentCallback);
 	espconn_regist_recvcb(&server, (espconn_recv_callback)Server::receiveCallback);
+
 	espconn_set_opt(&server, ESPCONN_KEEPALIVE);
 	espconn_clear_opt(&server, ESPCONN_COPY);
+	
 	espconn_secure_accept(&server);
 }
 
-void Server::close()
+void Server::disconnect()
 {
 	if (connection)
 		espconn_secure_disconnect(connection);
@@ -54,32 +56,31 @@ void Server::close()
 void Server::connectCallback(void *conn)
 {
 	connection = static_cast<espconn*>(conn);
-	Controller::notify(Controller::Connected);
-}
-
-void Server::disconnectCallback(void *conn)
-{
-	Controller::notify(Controller::Disconnected);
+	rxBuffer.clear();
+	#warning Activar timeout.
 }
 
 void Server::reconnectCallback(void *conn, sint8 error)
 {
-	Controller::notify(Controller::Disconnected);
+	disconnectCallback(conn);
 }
+
+void Server::disconnectCallback(void *conn)
+{
+	disconnect();
+	#warning Desactivar timeout.
+}
+
 
 void Server::receiveCallback(void *conn, char *data, uint16 size)
 {
 	if (rxBuffer.write(data, size)) {
 		if (rxBuffer.full()) {
 			Message msg = Message::createMessage(rxBuffer.data());
-			#warning Desactivar timeout;
 			MessageHandler::handle(msg);			
-		} else {
-			#warning Implementar timeout;
 		}
 	} else {
 		os_printf("Buffer overflow\n");
-		#warning Desconectar sesion.
 	}
 }
 
