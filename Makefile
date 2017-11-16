@@ -30,4 +30,4 @@ flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin
 
 clean:
-	rm -vf node-0x00000.bin node-0x10000.bin *.o node
+	rm -rvf node-0x00000.bin node-0x10000.bin *.o node
