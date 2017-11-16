@@ -29,8 +29,8 @@ void ICACHE_FLASH_ATTR WifiManager::wifiCallback(System_Event_t *evt)
 
 void ICACHE_FLASH_ATTR WifiManager::init()
 {
-	strcpy_s(&stationConfig.ssid, Settings::ssid(), Message::WIFI_SSID_SIZE + 1);
-	strcpy_s(&stationConfig.password, Settings::wifiPassword(), Message::WIFI_PASSWORD_SIZE + 1);
+	strcpy_s(reinterpret_cast<char*>(&stationConfig.ssid), Message::WIFI_SSID_SIZE + 1, static_cast<const char*>(Settings::ssid()));
+	strcpy_s(reinterpret_cast<char*>(&stationConfig.password), Message::WIFI_PASSWORD_SIZE + 1, static_cast<const char*>(Settings::wifiPassword()));
 	stationConfig.bssid_set = 0;
 
 	uint32_t ip = Settings::ip();

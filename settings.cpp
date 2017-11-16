@@ -70,12 +70,12 @@ uint8_t Settings::slideRate()
 
 void Settings::setSSID(const char *ssid)
 {
-	strcpy_s(mSSID, ssid, Message::WIFI_SSID_SIZE + 1);
+	strcpy_s(mSSID, Message::WIFI_SSID_SIZE + 1, ssid);
 }
 
 void Settings::setWiFiPassword(const char *wifiPassword)
 {
-	strcpy_s(mWiFiPassword, wifiPassword, Message::WIFI_PASSWORD_SIZE + 1);
+	strcpy_s(mWiFiPassword, Message::WIFI_PASSWORD_SIZE + 1, wifiPassword);
 }
 
 void Settings::setIP(uint32_t ip)
@@ -90,12 +90,12 @@ void Settings::setSubnetMask(uint32_t subnetMask)
 
 void Settings::setPassword(const char *password)
 {
-	strcpy_s(mPassword, password, Message::PASSWORD_SIZE + 1);
+	strcpy_s(mPassword, Message::PASSWORD_SIZE + 1, password);
 }
 
 void Settings::setText(const char *text)
 {
-	strcpy_s(mText, text, Message::TEXT_SIZE + 1);
+	strcpy_s(mText, Message::TEXT_SIZE + 1, text);
 }
 
 void Settings::setBlinkRate(uint8_t blinkRate)
