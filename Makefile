@@ -22,7 +22,7 @@ settings.o: settings.cpp settings.h strings.h protocolo/Message.h
 
 wifi_manager.o: wifi_manager.cpp wifi_manager.h settings.h protocolo/Message.h strings.h
 
-protocolo/Message.o: protocolo/Message.cpp protocolo/Message.h
+protocolo/Message.o: protocolo/Message.cpp protocolo/Message.h strings.h
 
 flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin

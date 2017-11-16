@@ -6,23 +6,28 @@
 // Realiza la copia desde el puntero src, hasta dst, indicando cuantos bytes se
 // quieren copiar. Mientras se realiza la copia, se busca en src un terminador 
 // 0. En caso de que no se encuentre se coloca en dst un terminador 0 al inicio.
-void static inline strcpy_s(void *dst, const void *src, uint8_t dstSize)
+int static inline strcpy_s(char *dest, unsigned int dmax, const char *src)
 {
-	const char *csrc = reinterpret_cast<const char*>(src);
-	char *cdst = reinterpret_cast<char*>(dst);
+	char *dst = dest;
 
-	if (dstSize)
-		dstSize--;
+	if (dmax)
+		dmax--;
+	else
+		return 1;
 
-	while (*csrc && dstSize) {
-		*(cdst++) = *(csrc++);
-		dstSize--;
+	while (*src && dmax) {
+		*(dest++) = *(src++);
+		dmax--;
 	}
 
-	*cdst = '\0';
+	*dest = '\0';
 
-	if (*csrc)
+	if (*src) {
 		reinterpret_cast<char*>(dst)[0] = '\0';
+		return 1;
+	}
+
+	return 0;
 }
 
 // Realiza la comparación entre los strings. En caso de que alguno de los dos
@@ -30,10 +35,25 @@ void static inline strcpy_s(void *dst, const void *src, uint8_t dstSize)
 // hasta que el otro llegue a 0. En caso de que ninguno de los dos tenga el
 // terminador, el comportamiento también resulta indefinido y se intentará leer
 // hasta alcanzar dstSize.
-bool static inline strcmp_s(const void *dst, const void *src, uint8_t dstSize)
+int static inline strcmp_s(const char *dest, int dmax, const char *src, int *indicator)
 {
-	#warning Implementar la comparacion de strings.
-	return true;
+	if (!dmax)
+		return 1;
+	
+	while (*src && *dest && dmax) {
+		if (*dest != *src)
+			break;
+		dest++;
+		src++;
+		dmax--;
+	}
+
+	if (indicator)
+		*indicator = *dest - *src;
+	else
+		return 1;
+
+	return 0;
 }
 
 #endif
