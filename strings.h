@@ -1,5 +1,4 @@
-#ifndef STRINGS_H
-#define STRINGS_H
+#pragma once
 
 #include <stdint.h>
 
@@ -55,5 +54,3 @@ int static inline strcmp_s(const char *dest, int dmax, const char *src, int *ind
 
 	return 0;
 }
-
-#endif

@@ -9,10 +9,10 @@ LDFLAGS = -L$(LIBS) -Teagle.app.v6.ld
 node-0x00000.bin: node
 	esptool.py elf2image $^
 
-node: main.o server.o message_handler.o wifi_manager.o settings.o protocolo/Message.o
-	$(CXX) main.o server.o message_handler.o wifi_manager.o settings.o protocolo/Message.o $(LDLIBS) $(LDFLAGS) -o node
+node: main.o server.o message_handler.o wifi_manager.o settings.o protocolo/Message.o led_sign.o font.o
+	$(CXX) main.o server.o message_handler.o wifi_manager.o settings.o protocolo/Message.o led_sign.o font.o $(LDLIBS) $(LDFLAGS) -o node
 
-main.o: main.cpp wifi_manager.h settings.h server.h
+main.o: main.cpp wifi_manager.h settings.h server.h led_sign.h
 
 message_handler.o: message_handler.cpp message_handler.h settings.h strings.h server.h protocolo/Message.h
 
@@ -22,7 +22,12 @@ settings.o: settings.cpp settings.h strings.h protocolo/Message.h
 
 wifi_manager.o: wifi_manager.cpp wifi_manager.h settings.h protocolo/Message.h strings.h
 
+led_sign.o: led_sign.cpp led_sign.h protocolo/Message.h strings.h
+
 protocolo/Message.o: protocolo/Message.cpp protocolo/Message.h strings.h
+
+font.o: font.dat
+	xtensa-lx106-elf-objcopy -I binary -O elf32-xtensa-le -B xtensa font.dat font.o
 
 flash: node-0x00000.bin
 	esptool.py write_flash 0 node-0x00000.bin 0x10000 node-0x10000.bin

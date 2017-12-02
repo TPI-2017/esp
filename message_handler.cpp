@@ -9,6 +9,7 @@ extern "C" {
 #include "strings.h"
 #include "server.h"
 
+ICACHE_FLASH_ATTR
 void MessageHandler::handle(const Message &msg)
 {
 	if (msg.empty()) {
@@ -40,6 +41,7 @@ void MessageHandler::handle(const Message &msg)
 		case Message::Type::SetPassword:
 			os_printf("SetPassword request\n");
 			Settings::setPassword(msg.newPassword());
+			Settings::storeSettings();
 			Server::send(Message::createGenericResponse(Message::ResponseCodePosition::OK).data(), Message::MESSAGE_SIZE);
 			break;
 
@@ -53,6 +55,7 @@ void MessageHandler::handle(const Message &msg)
 			Settings::setBlinkRate(msg.blinkRate());
 			Settings::setSlideRate(msg.slideRate());
 			Settings::setText(msg.text());
+			Settings::storeSettings();
 			Server::send(Message::createGenericResponse(Message::ResponseCodePosition::OK).data(), Message::MESSAGE_SIZE);
 			break;
 
@@ -69,6 +72,7 @@ void MessageHandler::handle(const Message &msg)
 			#warning Comprobar ip valida.
 			Settings::setSubnetMask(msg.wifiSubnet());
 			#warning Comprobar subnetMask válida.
+			Settings::storeSettings();
 			Server::send(Message::createGenericResponse(Message::ResponseCodePosition::OK).data(), Message::MESSAGE_SIZE);
 			break;
 

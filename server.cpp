@@ -16,7 +16,9 @@ esp_tcp Server::tcpParams;
 espconn Server::server;
 espconn *Server::connection = nullptr;
 Buffer<Message::MESSAGE_SIZE> Server::rxBuffer;
+os_timer_t Server::timeoutTimer;
 
+ICACHE_FLASH_ATTR
 void Server::init()
 {
 	os_memset(&tcpParams, 0, sizeof(esp_tcp));
@@ -27,6 +29,7 @@ void Server::init()
 	server.proto.tcp = &tcpParams;
 }
 
+ICACHE_FLASH_ATTR
 void Server::listen()
 {
 	// TODO si algo anda mal, mirar aca.
@@ -43,35 +46,52 @@ void Server::listen()
 	espconn_set_opt(&server, ESPCONN_KEEPALIVE);
 	espconn_clear_opt(&server, ESPCONN_COPY);
 	
+	espconn_tcp_set_max_con(1);
 	espconn_secure_accept(&server);
+
+	// Timer callback
+	os_timer_setfn(&timeoutTimer, timeoutCallback, nullptr);
 }
 
+ICACHE_FLASH_ATTR
+void Server::timeoutCallback(void *args)
+{
+	disconnect();
+	os_printf("Timeout!\n");
+}
+
+ICACHE_FLASH_ATTR
 void Server::disconnect()
 {
-	if (connection)
+	if (connection) {
 		espconn_secure_disconnect(connection);
+		connection = nullptr;
+	}
 	connection = nullptr;
+	os_timer_disarm(&timeoutTimer);
 }
 
+ICACHE_FLASH_ATTR
 void Server::connectCallback(void *conn)
 {
 	connection = static_cast<espconn*>(conn);
 	rxBuffer.clear();
-	#warning Activar timeout.
+	os_timer_arm(&timeoutTimer, TIMEOUT_MS, false);
 }
 
+ICACHE_FLASH_ATTR
 void Server::reconnectCallback(void *conn, sint8 error)
 {
 	disconnectCallback(conn);
 }
 
+ICACHE_FLASH_ATTR
 void Server::disconnectCallback(void *conn)
 {
 	disconnect();
-	#warning Desactivar timeout.
 }
 
-
+ICACHE_FLASH_ATTR
 void Server::receiveCallback(void *conn, char *data, uint16 size)
 {
 	if (rxBuffer.write(data, size)) {
@@ -84,6 +104,7 @@ void Server::receiveCallback(void *conn, char *data, uint16 size)
 	}
 }
 
+ICACHE_FLASH_ATTR
 void Server::send(const void *data, uint16_t len)
 {
 	uint8_t *ptr = reinterpret_cast<uint8_t*>(const_cast<void*>(data));
@@ -110,6 +131,7 @@ void Server::send(const void *data, uint16_t len)
 	}
 }
 
+ICACHE_FLASH_ATTR
 void Server::sentCallback(void *conn)
 {
 	rxBuffer.clear();

@@ -3,6 +3,7 @@
 
 extern "C" {
 #include "ip_addr.h"
+#include "osapi.h"
 #include "user_interface.h"
 #include "espconn.h"
 }
@@ -21,12 +22,16 @@ private:
 	static espconn server;
 	static espconn *connection;
 	static Buffer<Message::MESSAGE_SIZE> rxBuffer;
+	static os_timer_t timeoutTimer;
+
+	static constexpr uint16_t TIMEOUT_MS = 2000;
 	
 	static void connectCallback(void *conn);
 	static void disconnectCallback(void *conn);
 	static void reconnectCallback(void *conn, sint8 error);
 	static void receiveCallback(void *conn, char *data, uint16 size);
 	static void sentCallback(void *conn);
+	static void timeoutCallback(void*);
 };
 
 #endif
