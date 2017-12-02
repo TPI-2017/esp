@@ -7,6 +7,16 @@ extern "C" {
 #include "espmissingincludes.h"
 }
 
+float static floating(uint8_t num)
+{
+	return static_cast<float>(num) / 16.0;
+}
+
+uint8_t static fixed(float num)
+{
+	return static_cast<uint8_t>(num * 16.0);
+}
+
 extern uint8_t _binary_font_dat_start[256][8];
 #define font8x8_basic _binary_font_dat_start
 
@@ -144,11 +154,13 @@ void LEDSign::messageChanged(const char *text, uint8_t brate, int8_t srate)
 	} else {
 		os_timer_setfn(&mTimer, timerCallback, nullptr);
 		srate = (srate < 0) ? -srate : srate;
-		os_timer_arm(&mTimer, (srate * (1000 << 4)) >> 8, true);
+		uint16_t period = static_cast<uint16_t>(1000.0 / floating(srate));
+		os_timer_arm(&mTimer, period, true);
 	}
 
 	if (mBlinkRate) {
-		os_timer_arm(&mBlinkTimer, (brate * (1000 << 4)) >> 8, true);
+		uint16_t period = static_cast<uint16_t>(1000.0 / floating(brate)) / 2;
+		os_timer_arm(&mBlinkTimer, period, true);
 	} else {
 		os_timer_disarm(&mBlinkTimer);
 		setEnabled(true);
