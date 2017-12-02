@@ -57,40 +57,6 @@ void ICACHE_FLASH_ATTR LEDSign::init()
 	clearScreen();
 	sendCommand(0x0C01); // Turn on
 
-	#if 0 // Debug
-	sendCommand(0x010F);
-	sendCommand(0x02F0);
-	sendCommand(0x030F);
-	sendCommand(0x04F0);
-	sendCommand(0x050F);
-	sendCommand(0x06F0);
-	sendCommand(0x070F);
-	sendCommand(0x08F0);
-
-	// Acá representa la 'A'.
-	for(int8_t i = MAX_COLUMNS; i < 0; i--) {
-		GPIO_OUTPUT_SET(LATCH, 0);
-		os_delay_us(1);
-		
-		shiftOut((i << 8) | characterEncoding['A'][i - 1]);
-		
-		os_delay_us(1);
-		GPIO_OUTPUT_SET(LATCH, 1);
-		os_delay_us(1);
-	}
-	#endif
-
-	#if 0
-	sendCommand((8 << 8 | characterEncoding['A'][1]));
-	sendCommand((7 << 8 | characterEncoding['A'][0]));
-	sendCommand((6 << 8 | characterEncoding['A'][7]));
-	sendCommand((5 << 8 | characterEncoding['A'][6]));
-	sendCommand((4 << 8 | characterEncoding['A'][5]));
-	sendCommand((3 << 8 | characterEncoding['A'][4]));
-	sendCommand((2 << 8 | characterEncoding['A'][3]));
-	sendCommand((1 << 8 | characterEncoding['A'][2]));
-	#endif
-
 	os_timer_setfn(&mBlinkTimer, blinkTimerCallback, nullptr);
 }
 
@@ -111,13 +77,10 @@ void LEDSign::readJumpers()
 	GPIO_DIS_OUTPUT(JP3);
 	GPIO_DIS_OUTPUT(JP4);
 
-	mLetterCount = 0;
-	// mLetterCount |= GPIO_INPUT_GET(JP1);
-	mLetterCount |= GPIO_INPUT_GET(JP2) << 1;
+	mLetterCount = GPIO_INPUT_GET(JP2) << 1;
 	mLetterCount |= GPIO_INPUT_GET(JP3) << 2;
 	mLetterCount |= GPIO_INPUT_GET(JP4) << 3;
 	mLetterCount = 2;
-
 }
 
 void LEDSign::clearScreen()
@@ -173,7 +136,6 @@ void LEDSign::messageChanged(const char *text, uint8_t brate, int8_t srate)
 	mLetterIndex = mLetterCount - 1;
 	mColumnIndex = MAX_COLUMNS - 1;
 
-	// os_printf("BlinkRate = %d\nSlideRate = %d\nTextLength = %d\nLetterIndex = %d\nColumnIndex = %d\nLetterCount = %d\nString = %s\n", mBlinkRate, mSlideRate, mTextLength, mLetterIndex, mColumnIndex, mLetterCount, mMessage);
 
 	if (mSlideRate == 0) {
 		timerCallback(nullptr);
@@ -207,7 +169,6 @@ void LEDSign::timerCallback(void *args)
 		mCommandBuffer[j] = font8x8_basic[mMessage[I]][i]; 
 
 		countWithModule(i, MAX_COLUMNS, I, mTextLength, false);		
-		// os_printf("I = %d\ti = %d\n", I, i);
 	}
 
 	for (uint8_t j = 1; j <= MAX_COLUMNS; j++) {
@@ -216,7 +177,6 @@ void LEDSign::timerCallback(void *args)
 		
 		for (uint8_t k = 0; k < mLetterCount; k++) {
 			uint16_t word = ((MAX_COLUMNS - (j - 1)) << 8) | mCommandBuffer[(j - 1) + k * MAX_COLUMNS];
-			// os_printf("DIR = %d\tindice = %x\n", MAX_COLUMNS - (j - 1), ((unsigned char) mCommandBuffer[(j - 1) + k * MAX_COLUMNS]));
 			shiftOut(word);
 		}
 		
@@ -227,9 +187,6 @@ void LEDSign::timerCallback(void *args)
 	if (mSlideRate)
 		countWithModule(mColumnIndex, MAX_COLUMNS, mLetterIndex, mTextLength, (mSlideRate < 0));
 
-	// os_printf("I = %d\ti = %d\n", mLetterIndex, mColumnIndex);
-
-	// os_printf("===========================\n");
 }
 
 static void countWithModule(uint8_t &seconds, uint8_t maxSeconds, uint8_t &minutes, uint8_t maxMinutes, bool ascnd)
@@ -260,6 +217,5 @@ static void countWithModule(uint8_t &seconds, uint8_t maxSeconds, uint8_t &minut
 void LEDSign::setEnabled(bool enabled)
 {
 	mOn = enabled;
-	os_printf("setEnabled %d\n", enabled);
 	sendCommand((enabled) ?  0x0C01 : 0x0C00);
 }
