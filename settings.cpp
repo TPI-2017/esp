@@ -1,5 +1,6 @@
 #include "settings.h"
 #include "strings.h"
+#include "led_sign.h"
 
 extern "C" {
 #include "osapi.h"
@@ -42,7 +43,6 @@ void Settings::init()
 
 	// Inicializar puntero a estructura en la flash
 	uint32 addr = 0;
-	constexpr uint32_t structSize = sizeof(FlashSettings);
 
 	switch (system_get_flash_size_map()) {
 	case FLASH_SIZE_4M_MAP_256_256:
@@ -80,6 +80,8 @@ void Settings::loadSettings()
 		os_printf("Settings corrupt, using defaults...");
 		loadDefaultSettings();
 	}
+
+	LEDSign::messageChanged(mSettings.text, mSettings.blinkRate, mSettings.slideRate);
 }
 
 void Settings::storeSettings()
@@ -110,9 +112,7 @@ void Settings::loadDefaultSettings()
 	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
 	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
-	setText("Hello World");
-	setBlinkRate(1);
-	setSlideRate(23);
+	setText("TPI 1 G7 2017", 0.0, -3.0);
 	storeSettings();
 	os_printf("Default settings loaded!\n");
 }
@@ -147,12 +147,12 @@ const char *Settings::text()
 	return mSettings.text;
 }
 
-uint8_t Settings::blinkRate()
+float Settings::blinkRate()
 {
 	return mSettings.blinkRate;
 }
 
-uint8_t Settings::slideRate()
+float Settings::slideRate()
 {
 	return mSettings.slideRate;
 }
@@ -182,19 +182,12 @@ void Settings::setPassword(const char *password)
 	strcpy_s(mSettings.password, Message::PASSWORD_SIZE + 1, password);
 }
 
-void Settings::setText(const char *text)
+void Settings::setText(const char *text, float blinkRate, float slideRate)
 {
 	strcpy_s(mSettings.text, Message::TEXT_SIZE + 1, text);
-}
-
-void Settings::setBlinkRate(uint8_t blinkRate)
-{
 	mSettings.blinkRate = blinkRate;
-}
-
-void Settings::setSlideRate(uint8_t slideRate)
-{
 	mSettings.slideRate = slideRate;
+	LEDSign::messageChanged(text, blinkRate, slideRate);
 }
 
 void Settings::resetButtonTaskCb(void *args)

@@ -97,7 +97,7 @@ void Server::receiveCallback(void *conn, char *data, uint16 size)
 	if (rxBuffer.write(data, size)) {
 		if (rxBuffer.full()) {
 			Message msg = Message::createMessage(rxBuffer.data());
-			MessageHandler::handle(msg);			
+			MessageHandler::handle(msg);
 		}
 	} else {
 		os_printf("Buffer overflow\n");

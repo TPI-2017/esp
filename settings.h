@@ -12,8 +12,8 @@ struct FlashSettings {
 	uint32_t checksum;
 	uint32_t ip;
 	uint32_t subnet;
-	uint8_t blinkRate;
-	uint8_t slideRate;
+	float blinkRate;
+	float slideRate;
 	char password[Message::TEXT_SIZE + 1];
 	char ssid[Message::WIFI_SSID_SIZE + 1];
 	char wifiPassword[Message::WIFI_SSID_SIZE + 1];
@@ -32,17 +32,15 @@ public:
 	static uint32_t subnetMask();
 	static const char *password();
 	static const char *text();
-	static uint8_t blinkRate();
-	static uint8_t slideRate();
+	static float blinkRate();
+	static float slideRate();
 
 	static void setSSID(const char *ssid);
 	static void setWiFiPassword(const char *wifiPassword);
 	static void setIP(uint32_t ip);
 	static void setSubnetMask(uint32_t subnetMask);
 	static void setPassword(const char *password);
-	static void setText(const char *text);
-	static void setBlinkRate(uint8_t blinkRate);
-	static void setSlideRate(uint8_t slideRate);
+	static void setText(const char *text, float blinkRate, float slideRate);
 
 private:
 	static void loadDefaultSettings();
