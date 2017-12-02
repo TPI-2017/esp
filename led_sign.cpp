@@ -120,6 +120,8 @@ void LEDSign::shiftOut(uint16_t word)
 
 void LEDSign::messageChanged(const char *text, uint8_t brate, int8_t srate)
 {
+	os_printf("Text: %s", text);
+
 	os_timer_disarm(&mTimer);
 	uint8_t stringLength = os_strlen(text);
 	strcpy_s(mMessage, stringLength + 1, text);

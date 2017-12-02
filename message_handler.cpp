@@ -52,9 +52,7 @@ void MessageHandler::handle(const Message &msg)
 
 		case Message::Type::SetText:
 			os_printf("SetText request\n");
-			Settings::setBlinkRate(msg.blinkRate());
-			Settings::setSlideRate(msg.slideRate());
-			Settings::setText(msg.text());
+			Settings::setText(msg.text(), msg.blinkRate(), msg.slideRate());
 			Settings::storeSettings();
 			Server::send(Message::createGenericResponse(Message::ResponseCodePosition::OK).data(), Message::MESSAGE_SIZE);
 			break;

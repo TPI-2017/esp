@@ -15,11 +15,11 @@ void user_init()
 {
 	uart_div_modify(0, UART_CLK_FREQ / 115200);
 	gpio_init();
+	LEDSign::init();
 	Settings::init();
 	Settings::loadSettings();
 	WifiManager::init();
 	Server::init();
-	LEDSign::init();
 }
 
 }

@@ -40,9 +40,7 @@ public:
 	static void setIP(uint32_t ip);
 	static void setSubnetMask(uint32_t subnetMask);
 	static void setPassword(const char *password);
-	static void setText(const char *text);
-	static void setBlinkRate(uint8_t blinkRate);
-	static void setSlideRate(uint8_t slideRate);
+	static void setText(const char *text, uint8_t blinkRate, int8_t slideRate);
 
 private:
 	static void loadDefaultSettings();

@@ -1,5 +1,6 @@
 #include "settings.h"
 #include "strings.h"
+#include "led_sign.h"
 
 extern "C" {
 #include "osapi.h"
@@ -80,6 +81,8 @@ void Settings::loadSettings()
 		os_printf("Settings corrupt, using defaults...");
 		loadDefaultSettings();
 	}
+
+	LEDSign::messageChanged(mSettings.text, mSettings.blinkRate, mSettings.slideRate);
 }
 
 void Settings::storeSettings()
@@ -110,9 +113,7 @@ void Settings::loadDefaultSettings()
 	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
 	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
-	setText("Hello World");
-	setBlinkRate(1);
-	setSlideRate(23);
+	setText("TPI 1 G7 2017", 1 << 3, -1);
 	storeSettings();
 	os_printf("Default settings loaded!\n");
 }
@@ -182,19 +183,12 @@ void Settings::setPassword(const char *password)
 	strcpy_s(mSettings.password, Message::PASSWORD_SIZE + 1, password);
 }
 
-void Settings::setText(const char *text)
+void Settings::setText(const char *text, uint8_t blinkRate, int8_t slideRate)
 {
 	strcpy_s(mSettings.text, Message::TEXT_SIZE + 1, text);
-}
-
-void Settings::setBlinkRate(uint8_t blinkRate)
-{
 	mSettings.blinkRate = blinkRate;
-}
-
-void Settings::setSlideRate(uint8_t slideRate)
-{
 	mSettings.slideRate = slideRate;
+	LEDSign::messageChanged(text, blinkRate, slideRate);
 }
 
 void Settings::resetButtonTaskCb(void *args)
