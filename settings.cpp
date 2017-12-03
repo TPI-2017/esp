@@ -43,7 +43,6 @@ void Settings::init()
 
 	// Inicializar puntero a estructura en la flash
 	uint32 addr = 0;
-	constexpr uint32_t structSize = sizeof(FlashSettings);
 
 	switch (system_get_flash_size_map()) {
 	case FLASH_SIZE_4M_MAP_256_256:

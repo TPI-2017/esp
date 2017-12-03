@@ -67,9 +67,7 @@ void MessageHandler::handle(const Message &msg)
 			Settings::setSSID(msg.wifiSSID());
 			Settings::setWiFiPassword(msg.wifiPassword());
 			Settings::setIP(msg.wifiIP());
-			#warning Comprobar ip valida.
 			Settings::setSubnetMask(msg.wifiSubnet());
-			#warning Comprobar subnetMask válida.
 			Settings::storeSettings();
 			Server::send(Message::createGenericResponse(Message::ResponseCodePosition::OK).data(), Message::MESSAGE_SIZE);
 			break;

@@ -12,11 +12,6 @@ float static floating(uint8_t num)
 	return static_cast<float>(num) / 16.0;
 }
 
-uint8_t static fixed(float num)
-{
-	return static_cast<uint8_t>(num * 16.0);
-}
-
 extern uint8_t _binary_font_dat_start[256][8];
 #define font8x8_basic _binary_font_dat_start
 
