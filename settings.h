@@ -13,7 +13,7 @@ struct FlashSettings {
 	uint32_t ip;
 	uint32_t subnet;
 	uint8_t blinkRate;
-	uint8_t slideRate;
+	int8_t slideRate;
 	char password[Message::TEXT_SIZE + 1];
 	char ssid[Message::WIFI_SSID_SIZE + 1];
 	char wifiPassword[Message::WIFI_SSID_SIZE + 1];
@@ -33,7 +33,7 @@ public:
 	static const char *password();
 	static const char *text();
 	static uint8_t blinkRate();
-	static uint8_t slideRate();
+	static int8_t slideRate();
 
 	static void setSSID(const char *ssid);
 	static void setWiFiPassword(const char *wifiPassword);
