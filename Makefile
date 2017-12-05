@@ -22,7 +22,7 @@ settings.o: settings.cpp settings.h strings.h protocolo/Message.h
 
 wifi_manager.o: wifi_manager.cpp wifi_manager.h settings.h protocolo/Message.h strings.h
 
-led_sign.o: led_sign.cpp led_sign.h protocolo/Message.h strings.h
+led_sign.o: led_sign.cpp led_sign.h protocolo/Message.h strings.h modulo_number.h
 
 protocolo/Message.o: protocolo/Message.cpp protocolo/Message.h strings.h
 

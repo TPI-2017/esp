@@ -112,7 +112,7 @@ void Settings::loadDefaultSettings()
 	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
 	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
-	setText("TPI 1 G7 2017", 1 << 3, -1);
+	setText("TPI 1 G7 2017", 0, -200);
 	storeSettings();
 	os_printf("Default settings loaded!\n");
 }
@@ -152,7 +152,7 @@ uint8_t Settings::blinkRate()
 	return mSettings.blinkRate;
 }
 
-uint8_t Settings::slideRate()
+int8_t Settings::slideRate()
 {
 	return mSettings.slideRate;
 }
