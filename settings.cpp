@@ -76,7 +76,8 @@ void Settings::loadSettings()
 	}
 
 	os_printf("Flash read.\n");
-	if (mSettings.checksum != checksum(&mSettings)) {
+	// if (mSettings.checksum != checksum(&mSettings)) {
+	if (true) {
 		os_printf("Settings corrupt, using defaults...");
 		loadDefaultSettings();
 	}
@@ -112,7 +113,7 @@ void Settings::loadDefaultSettings()
 	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
 	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
 	setPassword("1234");
-	setText("TPI 1 G7 2017", 0, -200);
+	setText("TPI 1 G7 2017", 0.0, -3.0);
 	storeSettings();
 	os_printf("Default settings loaded!\n");
 }
@@ -147,12 +148,12 @@ const char *Settings::text()
 	return mSettings.text;
 }
 
-uint8_t Settings::blinkRate()
+float Settings::blinkRate()
 {
 	return mSettings.blinkRate;
 }
 
-int8_t Settings::slideRate()
+float Settings::slideRate()
 {
 	return mSettings.slideRate;
 }
@@ -182,7 +183,7 @@ void Settings::setPassword(const char *password)
 	strcpy_s(mSettings.password, Message::PASSWORD_SIZE + 1, password);
 }
 
-void Settings::setText(const char *text, uint8_t blinkRate, int8_t slideRate)
+void Settings::setText(const char *text, float blinkRate, float slideRate)
 {
 	strcpy_s(mSettings.text, Message::TEXT_SIZE + 1, text);
 	mSettings.blinkRate = blinkRate;

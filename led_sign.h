@@ -15,7 +15,7 @@ public:
 	static void init();
 	static void readJumpers();
 	static void setEnabled(bool enabled);
-	static void messageChanged(const char *text, uint8_t brate, int8_t srate);
+	static void messageChanged(const char *text, float brate, float srate);
 
 private:
 
@@ -59,8 +59,8 @@ private:
 	// al módulo maestro.
 	static uint8_t mBitmapBuffer[MAX_COLUMNS * MAX_LETTERS];
 
-	static uint8_t mBlinkRate;
-	static int8_t mSlideRate;
+	static float mBlinkRate;
+	static float mSlideRate;
 	static uint8_t mTextLength;
 	static char mMessage[Message::MESSAGE_SIZE + 1];
 	

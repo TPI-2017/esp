@@ -7,11 +7,6 @@ extern "C" {
 #include "espmissingincludes.h"
 }
 
-float static floating(uint8_t num)
-{
-	return static_cast<float>(num) / 16.0;
-}
-
 extern uint8_t _binary_font_dat_start[256*8];
 #define font8x8_basic _binary_font_dat_start
 
@@ -30,8 +25,8 @@ os_timer_t LEDSign::mBlinkTimer;
 uint8_t    LEDSign::mLetterCount;
 uint8_t    LEDSign::mBitmapBuffer[LEDSign::MAX_COLUMNS * LEDSign::MAX_LETTERS];
 
-uint8_t               LEDSign::mBlinkRate;
-int8_t                LEDSign::mSlideRate;
+float               LEDSign::mBlinkRate;
+float                LEDSign::mSlideRate;
 uint8_t               LEDSign::mTextLength;
 char                  LEDSign::mMessage[Message::MESSAGE_SIZE + 1];
 
@@ -118,7 +113,7 @@ void LEDSign::shiftOut(uint16_t word)
 	os_delay_us(1);
 }
 
-void LEDSign::messageChanged(const char *text, uint8_t brate, int8_t srate)
+void LEDSign::messageChanged(const char *text, float brate, float srate)
 {
 
 	mBlinkRate = brate;
@@ -139,15 +134,17 @@ void LEDSign::messageChanged(const char *text, uint8_t brate, int8_t srate)
 	os_timer_disarm(&mTimer);
 	if (mSlideRate) {
 		os_timer_setfn(&mTimer, timerCallback, nullptr);
-		srate = (srate < 0) ? -srate : srate;
-		uint16_t period = 1000.0 / floating(srate);
+		srate = (srate < 0.0) ? -1.0 * srate : srate;
+		uint32_t period = static_cast<uint32_t>(1000.0 / srate);
+		os_printf("Period: %u\n", period);
 		os_timer_arm(&mTimer, period, true);
 	}
 
 	// Configuramos el timer para el parpadeo
 	os_timer_disarm(&mBlinkTimer);
 	if (mBlinkRate) {
-		uint16_t period = 1000.0 / floating(brate);
+		uint32_t period = static_cast<uint32_t>(500.0 / brate);
+		os_printf("Period: %u\n", period);
 		os_timer_arm(&mBlinkTimer, period, true);
 	} else {
 		os_timer_disarm(&mBlinkTimer);
