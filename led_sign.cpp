@@ -10,13 +10,17 @@ extern "C" {
 extern uint8_t _binary_font_dat_start[256*8];
 #define font8x8_basic _binary_font_dat_start
 
-#define DOUT 	5
-#define CLK 	0
-#define LATCH 	4
-#define JP1 	10
-#define JP2 	13
-#define JP3 	12
-#define JP4 	14
+#define DOUT    5
+#define CLK     0
+#define LATCH   4
+#define JP1    13
+#define JP2    12
+#define JP3    14
+
+#define DELAY_US 1
+
+#define HIGH 0
+#define LOW  1
 
 bool       LEDSign::mOn;
 os_timer_t LEDSign::mTimer;
@@ -25,10 +29,10 @@ os_timer_t LEDSign::mBlinkTimer;
 uint8_t    LEDSign::mLetterCount;
 uint8_t    LEDSign::mBitmapBuffer[LEDSign::MAX_COLUMNS * LEDSign::MAX_LETTERS];
 
-float               LEDSign::mBlinkRate;
-float                LEDSign::mSlideRate;
-uint8_t               LEDSign::mTextLength;
-char                  LEDSign::mMessage[Message::MESSAGE_SIZE + 1];
+float      LEDSign::mBlinkRate;
+float      LEDSign::mSlideRate;
+uint8_t    LEDSign::mTextLength;
+char       LEDSign::mMessage[Message::MESSAGE_SIZE + 1];
 
 ModuloNumber<uint8_t> LEDSign::mColumnIndex(0,0);
 
@@ -39,11 +43,12 @@ void ICACHE_FLASH_ATTR LEDSign::init()
 	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0); // CLK
 	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO4_U, FUNC_GPIO4); // LATCH
 
+	// Configuramos estos pines como salida
 	gpio_output_set(0, 0, (1 << DOUT) | (1 << CLK) | (1 << LATCH), 0);
 
-	GPIO_OUTPUT_SET(LATCH, 1);
-	GPIO_OUTPUT_SET(CLK, 0);
-	GPIO_OUTPUT_SET(DOUT, 0);
+	GPIO_OUTPUT_SET(LATCH, HIGH);
+	GPIO_OUTPUT_SET(CLK, LOW);
+	GPIO_OUTPUT_SET(DOUT, LOW);
 
 	readJumpers();
 
@@ -68,14 +73,13 @@ void LEDSign::readJumpers()
 	PIN_PULLUP_EN(PERIPHS_IO_MUX_MTDI_U);
 	PIN_PULLUP_EN(PERIPHS_IO_MUX_MTMS_U);
 
+	GPIO_DIS_OUTPUT(JP1);
 	GPIO_DIS_OUTPUT(JP2);
 	GPIO_DIS_OUTPUT(JP3);
-	GPIO_DIS_OUTPUT(JP4);
 
-	mLetterCount = GPIO_INPUT_GET(JP2) << 1;
-	mLetterCount |= GPIO_INPUT_GET(JP3) << 2;
-	mLetterCount |= GPIO_INPUT_GET(JP4) << 3;
-	mLetterCount++;
+	mLetterCount = 1;
+
+	os_printf("Utilizando %d carteles.\n", mLetterCount);
 }
 
 void LEDSign::clearScreen()
@@ -86,31 +90,34 @@ void LEDSign::clearScreen()
 
 void LEDSign::sendCommand(uint16_t command)
 {
-	GPIO_OUTPUT_SET(LATCH, 0);
-	os_delay_us(1);
+	GPIO_OUTPUT_SET(LATCH, LOW);
+	os_delay_us(DELAY_US);
 	
 	for (uint8_t i = 0; i < mLetterCount; i++)
 		shiftOut(command);
 	
-	os_delay_us(1);
-	GPIO_OUTPUT_SET(LATCH, 1);
-	os_delay_us(1);
+	os_delay_us(DELAY_US);
+	GPIO_OUTPUT_SET(LATCH, HIGH);
+	os_delay_us(DELAY_US);
 }
 
 void LEDSign::shiftOut(uint16_t word)
 {
 	for (int i = 0; i < 16; i++) {
-		GPIO_OUTPUT_SET(CLK, 0);
+		GPIO_OUTPUT_SET(CLK, LOW);
 		char bit = (word & 0x8000) >> 15;
-		os_delay_us(1);
-		GPIO_OUTPUT_SET(DOUT, bit);
-		os_delay_us(1);
-		GPIO_OUTPUT_SET(CLK, 1);
-		os_delay_us(1);
+		os_delay_us(DELAY_US);
+		if (bit)
+			GPIO_OUTPUT_SET(DOUT, HIGH);
+		else
+			GPIO_OUTPUT_SET(DOUT, LOW);
+		os_delay_us(DELAY_US);
+		GPIO_OUTPUT_SET(CLK, HIGH);
+		os_delay_us(DELAY_US);
 		word *= 2;
 	}
-	GPIO_OUTPUT_SET(CLK, 0);
-	os_delay_us(1);
+	GPIO_OUTPUT_SET(CLK, LOW);
+	os_delay_us(DELAY_US);
 }
 
 void LEDSign::messageChanged(const char *text, float brate, float srate)
@@ -174,8 +181,8 @@ void LEDSign::generateBuffer()
 void LEDSign::updateMessage()
 {
 	for (uint8_t j = 1; j <= MAX_COLUMNS; j++) {
-		GPIO_OUTPUT_SET(LATCH, 0);
-		os_delay_us(1);
+		GPIO_OUTPUT_SET(LATCH, LOW);
+		os_delay_us(DELAY_US);
 		
 		for (uint8_t k = 0; k < mLetterCount; k++) {
 			uint8_t regNumber = MAX_COLUMNS - (j - 1);
@@ -184,9 +191,9 @@ void LEDSign::updateMessage()
 			shiftOut(word);
 		}
 		
-		os_delay_us(1);
-		GPIO_OUTPUT_SET(LATCH, 1);
-		os_delay_us(1);
+		os_delay_us(DELAY_US);
+		GPIO_OUTPUT_SET(LATCH, HIGH);
+		os_delay_us(DELAY_US);
 	}
 
 	if (mSlideRate > 0)
