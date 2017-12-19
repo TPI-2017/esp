@@ -77,9 +77,12 @@ void LEDSign::readJumpers()
 	GPIO_DIS_OUTPUT(JP2);
 	GPIO_DIS_OUTPUT(JP3);
 
-	mLetterCount = 1;
+	mLetterCount  = GPIO_INPUT_GET(JP1) ? 0 : 1;
+	mLetterCount |= (GPIO_INPUT_GET(JP2) ? 0 : 1) << 1;
+	mLetterCount |= (GPIO_INPUT_GET(JP3) ? 0 : 1) << 2;
+	mLetterCount++;
 
-	os_printf("Utilizando %d carteles.\n", mLetterCount);
+	os_printf("Utilizando %d cartel(es).\n", mLetterCount);
 }
 
 void LEDSign::clearScreen()
@@ -122,7 +125,7 @@ void LEDSign::shiftOut(uint16_t word)
 
 void LEDSign::messageChanged(const char *text, float brate, float srate)
 {
-
+	os_printf("Msg: \"%s\"\n", text);
 	mBlinkRate = brate;
 	mSlideRate = srate;
 	auto strLength = os_strlen(text);
@@ -143,7 +146,6 @@ void LEDSign::messageChanged(const char *text, float brate, float srate)
 		os_timer_setfn(&mTimer, timerCallback, nullptr);
 		srate = (srate < 0.0) ? -1.0 * srate : srate;
 		uint32_t period = static_cast<uint32_t>(1000.0 / srate);
-		os_printf("Period: %u\n", period);
 		os_timer_arm(&mTimer, period, true);
 	}
 
@@ -151,7 +153,6 @@ void LEDSign::messageChanged(const char *text, float brate, float srate)
 	os_timer_disarm(&mBlinkTimer);
 	if (mBlinkRate) {
 		uint32_t period = static_cast<uint32_t>(500.0 / brate);
-		os_printf("Period: %u\n", period);
 		os_timer_arm(&mBlinkTimer, period, true);
 	} else {
 		os_timer_disarm(&mBlinkTimer);

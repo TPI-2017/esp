@@ -76,8 +76,7 @@ void Settings::loadSettings()
 	}
 
 	os_printf("Flash read.\n");
-	// if (mSettings.checksum != checksum(&mSettings)) {
-	if (true) {
+	if (mSettings.checksum != checksum(&mSettings)) {
 		os_printf("Settings corrupt, using defaults...");
 		loadDefaultSettings();
 	}
