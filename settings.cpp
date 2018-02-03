@@ -109,10 +109,10 @@ void Settings::loadDefaultSettings()
 {
 	setSSID("Fibertel");
 	setWiFiPassword("lipschitzpotato");
-	setIP(192 << 24 | 168 << 16 | 0 << 8 | 14);
-	setSubnetMask(255 << 24 | 255 << 16 | 255 << 8 | 0);
+	setIP(192 << 24 | 168 << 16 | 0 << 43 | 254);
+	setSubnetMask(0xFFFFFF00);
 	setPassword("1234");
-	setText("TPI 1 G7 2017", 0.0, -3.0);
+	setText("Gracias por crearme.", 0.0, -3.0);
 	storeSettings();
 	os_printf("Default settings loaded!\n");
 }
